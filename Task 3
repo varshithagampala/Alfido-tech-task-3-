@@ -1,0 +1,56 @@
+# Sentiment Analysis with NLTK (VADER) and SpaCy + TextBlob
+
+import nltk
+import spacy
+from textblob import TextBlob
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Download resources (only the first time)
+nltk.download('vader_lexicon')
+
+# Initialize analyzers
+sia = SentimentIntensityAnalyzer()
+nlp = spacy.load("en_core_web_sm")
+
+# Input text
+text = "The service was incredibly slow, but the food was delicious and worth the wait."
+
+print("\nInput Text:")
+print(text)
+
+# ---------- NLTK VADER ----------
+print("\n🔍 NLTK VADER Sentiment Analysis:")
+
+vader_scores = sia.polarity_scores(text)
+print("Scores:", vader_scores)
+
+compound = vader_scores['compound']
+if compound >= 0.05:
+    vader_sentiment = "Positive"
+elif compound <= -0.05:
+    vader_sentiment = "Negative"
+else:
+    vader_sentiment = "Neutral"
+
+print("Overall Sentiment:", vader_sentiment)
+
+# ---------- SpaCy + TextBlob ----------
+print("\n🔍 SpaCy + TextBlob Sentiment Analysis:")
+
+doc = nlp(text)  # You can use this for tokenization, NER, etc.
+blob = TextBlob(text)
+
+polarity = blob.sentiment.polarity
+subjectivity = blob.sentiment.subjectivity
+
+print(f"Polarity: {polarity:.2f}")
+print(f"Subjectivity: {subjectivity:.2f}")
+
+if polarity > 0:
+    blob_sentiment = "Positive"
+elif polarity < 0:
+    blob_sentiment = "Negative"
+else:
+    blob_sentiment = "Neutral"
+
+print("Overall Sentiment:", blob_sentiment)
